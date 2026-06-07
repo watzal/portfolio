@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MockMentor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07080F;--bg2:#0D0E1A;--bg3:#121420;--bg4:#181A28;--ink:#EEE9FF;--ink2:#9490B0;--ink3:#504D6A;--a1:#7B6EF6;--a2:#F06BBA;--a3:#5EE8C8;--grad:linear-gradient(135deg,#7B6EF6,#F06BBA);--border:rgba(238,233,255,.07);--border2:rgba(238,233,255,.14)}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;cursor:none;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.35}
+#cur{width:10px;height:10px;background:var(--a1);border-radius:50%;position:fixed;top:0;left:0;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen}
+#cur-ring{width:34px;height:34px;border:1.5px solid rgba(123,110,246,.5);border-radius:50%;position:fixed;top:0;left:0;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:all .15s}
+.pd-nav{display:flex;align-items:center;justify-content:space-between;padding:1.4rem 4rem;border-bottom:1px solid var(--border);background:rgba(7,8,15,.85);backdrop-filter:blur(24px);position:sticky;top:0;z-index:500}
+.pd-back{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s}
+.pd-back:hover{color:var(--a1)}
+.pd-back svg{transition:transform .2s}
+.pd-back:hover svg{transform:translateX(-3px)}
+.pd-links{display:flex;gap:.75rem}
+.pd-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.42rem 1.1rem;border-radius:100px;text-decoration:none;transition:all .2s;cursor:none}
+.pd-link-gh{color:var(--ink2);border:1px solid var(--border2)}
+.pd-link-gh:hover{color:var(--a1);border-color:rgba(123,110,246,.5);background:rgba(123,110,246,.06)}
+.pd-link-demo{background:var(--grad);color:#fff;border:none}
+.pd-link-demo:hover{opacity:.85;transform:translateY(-1px)}
+.pd-link-blog{color:var(--a3);border:1px solid rgba(94,232,200,.25);background:rgba(94,232,200,.06)}
+.pd-link-blog:hover{background:rgba(94,232,200,.12);border-color:rgba(94,232,200,.4)}
+.pd-hero{position:relative;padding:7rem 4rem 5rem;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(123,110,246,.1),transparent 65%),radial-gradient(ellipse 40% 40% at 90% 80%,rgba(240,107,186,.07),transparent 55%),var(--bg2);overflow:hidden}
+.pd-hero-inner{max-width:1300px;margin:0 auto}
+.pd-hero-orb{position:absolute;top:-20%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(123,110,246,.12),transparent 70%);filter:blur(80px);pointer-events:none;animation:orbDrift 12s ease-in-out infinite}
+.pd-hero-orb2{position:absolute;bottom:-10%;left:10%;width:350px;height:350px;border-radius:50%;background:radial-gradient(circle,rgba(240,107,186,.08),transparent 70%);filter:blur(80px);pointer-events:none;animation:orbDrift 16s ease-in-out infinite reverse}
+@keyframes orbDrift{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)}}
+.pd-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;flex-wrap:wrap;opacity:0;animation:fadeUp .6s .1s cubic-bezier(.16,1,.3,1) forwards}
+.pd-cat{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:rgba(240,107,186,.1);color:var(--a2);border:1px solid rgba(240,107,186,.25);padding:.3rem .9rem;border-radius:100px}
+.pd-badge{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .9rem;border-radius:100px;display:inline-flex;align-items:center;gap:.4rem}
+.pd-badge-live{background:rgba(94,232,200,.08);color:var(--a3);border:1px solid rgba(94,232,200,.2)}
+.pd-badge-blog{background:rgba(123,110,246,.08);color:var(--a1);border:1px solid rgba(123,110,246,.2)}
+.pd-badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(94,232,200,.5)}50%{box-shadow:0 0 0 6px rgba(94,232,200,0)}}
+.pd-title{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,9vw,9rem);font-weight:700;letter-spacing:-.05em;color:var(--ink);line-height:.9;margin-bottom:.6rem;text-align:center;opacity:0;animation:fadeUp .8s .25s cubic-bezier(.16,1,.3,1) forwards}
+/* .pd-title-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,2.8vw,2.4rem);font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2rem;display:block;text-align:center;opacity:0;animation:fadeUp .7s .42s cubic-bezier(.16,1,.3,1) forwards} */
+/* .pd-subtitle{font-size:1.05rem;color:var(--ink2);max-width:640px;line-height:2;margin-bottom:3rem;text-align:center;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp .7s .55s cubic-bezier(.16,1,.3,1) forwards} */
+.pd-title-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.4rem,2.8vw,2.4rem);
+  font-style:italic;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:2rem;display:block;
+  text-align:center;
+  opacity:0;animation:fadeUp .7s .42s cubic-bezier(.16,1,.3,1) forwards;
+}
+.pd-subtitle{
+  font-size:1.75rem;color:var(--ink2);max-width:180020px;line-height:2;margin-bottom:3rem;
+  justify-content: center;
+  text-align: center;
+  opacity:0;animation:fadeUp .7s .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+.pd-meta-row{display:flex;gap:0;flex-wrap:wrap;padding-top:2rem;border-top:1px solid var(--border);justify-content:center;opacity:0;animation:fadeUp .6s .7s cubic-bezier(.16,1,.3,1) forwards}
+.pd-meta-item{padding:0 2.5rem;border-right:1px solid var(--border)}
+.pd-meta-item:first-child{padding-left:0}
+.pd-meta-item:last-child{border-right:none}
+.pd-meta-label{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:.4rem}
+.pd-meta-val{font-size:.95rem;font-weight:700;color:var(--ink)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.pd-stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);background:var(--bg3)}
+.pd-stat{padding:2.5rem 2rem;border-right:1px solid var(--border);text-align:center;transition:background .3s}
+.pd-stat:last-child{border-right:none}
+.pd-stat:hover{background:rgba(123,110,246,.05)}
+.pd-stat-val{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:700;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;line-height:1}
+.pd-stat-label{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-top:.5rem;display:block}
+.pd-blog-strip{padding:2.5rem 4rem;border-bottom:1px solid var(--border);background:var(--bg2);display:flex;justify-content:center}
+.pd-blog-card{max-width:860px;width:100%;display:flex;align-items:center;justify-content:space-between;gap:2rem;padding:1.8rem 2.2rem;background:rgba(123,110,246,.05);border:1px solid rgba(123,110,246,.2);border-radius:16px;text-decoration:none;transition:border-color .3s,transform .3s,box-shadow .3s;cursor:none}
+.pd-blog-card:hover{border-color:rgba(123,110,246,.4);transform:translateY(-2px);box-shadow:0 12px 40px rgba(123,110,246,.1)}
+.pd-blog-left{display:flex;flex-direction:column;gap:.5rem}
+.pd-blog-eyebrow{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--a1)}
+.pd-blog-title{font-family:'Cormorant Garamond',serif;font-size:1.5rem;font-weight:700;color:var(--ink);letter-spacing:-.02em;line-height:1.2}
+.pd-blog-meta{font-size:.75rem;color:var(--ink3);font-weight:500}
+.pd-blog-arrow{font-size:1.4rem;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;transition:transform .3s}
+.pd-blog-card:hover .pd-blog-arrow{transform:translate(4px,-4px)}
+.pd-content{display:grid;grid-template-columns:1fr 320px;gap:5rem;padding:5rem 4rem;align-items:start;max-width:1300px;margin:0 auto}
+.pd-section{margin-bottom:4rem}
+.pd-section-label{display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem}
+.pd-section-num{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pd-section-line{flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent);max-width:40px}
+.pd-section h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
+.pd-section p{font-size:1.05rem;color:var(--ink2);line-height:2;margin-top:1rem}
+.pd-section strong{color:var(--ink);font-weight:600;-webkit-text-fill-color:var(--ink)}
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-top:1.8rem}
+.feat-card{padding:1.6rem 1.8rem;background:var(--bg2);border:1px solid var(--border);border-radius:14px;transition:border-color .35s,background .35s,transform .35s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.feat-card:hover{border-color:rgba(123,110,246,.35);background:var(--bg3);transform:translateY(-3px)}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-icon{font-size:1.6rem;margin-bottom:.8rem;display:block}
+.feat-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.4rem}
+.feat-desc{font-size:.82rem;color:var(--ink3);line-height:1.7}
+.arch-row{display:flex;flex-direction:column;gap:.85rem;margin-top:1.8rem}
+.arch-item{display:flex;align-items:center;gap:1.2rem;padding:1rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;transition:border-color .3s,transform .3s}
+.arch-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(4px)}
+.arch-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);width:90px;flex-shrink:0}
+.arch-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.arch-tag{font-size:.72rem;padding:.22rem .7rem;background:rgba(123,110,246,.08);color:var(--a1);border:1px solid rgba(123,110,246,.15);border-radius:100px;font-weight:600}
+.arch-tag-p{background:rgba(240,107,186,.08);color:var(--a2);border-color:rgba(240,107,186,.15)}
+.arch-tag-t{background:rgba(94,232,200,.08);color:var(--a3);border-color:rgba(94,232,200,.15)}
+.learn-list{display:flex;flex-direction:column;gap:.85rem;margin-top:1.5rem}
+.learn-item{display:flex;align-items:flex-start;gap:1rem;padding:1.1rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;font-size:.95rem;color:var(--ink2);line-height:1.8;transition:border-color .3s,transform .3s cubic-bezier(.16,1,.3,1)}
+.learn-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(5px)}
+.learn-item::before{content:'rarr';background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;margin-top:.1rem;font-size:1rem}
+.pd-sidebar{position:sticky;top:6rem}
+.pd-sidebar-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.8rem;margin-bottom:1.2rem;transition:border-color .3s,box-shadow .3s}
+.pd-sidebar-card:hover{border-color:rgba(123,110,246,.25);box-shadow:0 8px 30px rgba(123,110,246,.06)}
+.pd-sidebar-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.2rem}
+.pd-tech-tags{display:flex;flex-wrap:wrap;gap:.45rem}
+.pd-tech-tag{font-size:.78rem;padding:.24rem .7rem;background:rgba(123,110,246,.08);color:var(--a1);border:1px solid rgba(123,110,246,.15);border-radius:100px;font-weight:600}
+.pd-link-row{display:flex;flex-direction:column;gap:.5rem}
+.pd-link-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--ink2);text-decoration:none;padding:.55rem .7rem;border-radius:8px;transition:all .2s;cursor:none}
+.pd-link-item:hover{color:var(--a1);background:rgba(123,110,246,.07);padding-left:1rem}
+.pd-link-item span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.pd-footer{padding:2rem 4rem;border-top:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.pd-footer-back{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s;cursor:none}
+.pd-footer-back:hover{color:var(--a1)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+
+.learn-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.1rem 1.4rem;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  font-size:1.2rem;color:var(--ink2);line-height:1.8;
+  transition:border-color .3s,transform .3s cubic-bezier(.16,1,.3,1);
+}
+.learn-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(5px)}
+.learn-item::before{content:'→';background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;margin-top:.1rem;font-size:1rem}
+
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<nav class="pd-nav">
+  <a href="backup.html" class="pd-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Portfolio
+  </a>
+  <div class="pd-links">
+    <a href="https://github.com/watzal/MockMentor" class="pd-link pd-link-gh" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+    <a href="https://medium.com/data-science-collective/building-mockmentor-ai-interview-coach-that-reads-your-resume-1f892a0a71f0?source=friends_link&sk=978fe50bcc8a8402632386f45d5b6a1e" class="pd-link pd-link-blog" target="_blank">&#128214; Blog Post</a>
+    <a href="https://mockmentor-vatsal.streamlit.app/" class="pd-link pd-link-demo" target="_blank">Live Demo &#8599;</a>
+  </div>
+</nav>
+
+<div class="pd-hero">
+  <div class="pd-hero-orb"></div>
+  <div class="pd-hero-orb2"></div>
+  <div class="pd-hero-inner">
+    <div class="pd-eyebrow">
+      <span class="pd-cat">Gen AI &middot; LLM</span>
+      <span class="pd-badge pd-badge-live"><span class="pd-badge-dot"></span>Live on Streamlit</span>
+      <!-- <span class="pd-badge pd-badge-blog">&#128214; 7 min read</span> -->
+    </div>
+    <h1 class="pd-title">MockMentor</h1>
+    <span class="pd-title-sub">AI Interview Coach That Reads Your Resume</span>
+    <p class="pd-subtitle">Upload your resume, mention the job title, and get a <strong style="-webkit-text-fill-color:var(--ink);color:var(--ink)">personalised mock interview</strong> powered by Google Gemini &mdash; <span style="color: white;">with real-time evaluation, structured feedback, and performance tracking via MLflow.</span></p>
+    <div class="pd-meta-row">
+      <div class="pd-meta-item"><p class="pd-meta-label">Status</p><p class="pd-meta-val" style="color:var(--a3)">&#10003; Live</p></div>
+      <!-- <div class="pd-meta-item"><p class="pd-meta-label">Stack</p><p class="pd-meta-val">LangChain &middot; Gemini</p></div> -->
+      <div class="pd-meta-item"><p class="pd-meta-label">Type</p><p class="pd-meta-val">Personal Project</p></div>
+      <div class="pd-meta-item"><p class="pd-meta-label">Timeline</p><p class="pd-meta-val">Oct - Dec 2025</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="pd-stats reveal">
+  <div class="pd-stat"><span class="pd-stat-val">3</span><span class="pd-stat-label">Pipeline Stages</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">PDF</span><span class="pd-stat-label">Resume Parsing</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">5+</span><span class="pd-stat-label">Roles Supported</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">Live</span><span class="pd-stat-label">Streamlit Deploy</span></div>
+</div>
+
+<div class="pd-blog-strip reveal">
+  <a href="https://medium.com/data-science-collective/building-mockmentor-ai-interview-coach-that-reads-your-resume-1f892a0a71f0?source=friends_link&sk=978fe50bcc8a8402632386f45d5b6a1e" target="_blank" class="pd-blog-card">
+    <div class="pd-blog-left">
+      <span class="pd-blog-eyebrow">Medium &middot; Data Science Collective &middot; 7 min read</span>
+      <span class="pd-blog-title">Building MockMentor: AI Interview Coach That Reads Your Resume</span>
+      <span class="pd-blog-meta">How I built a resume-aware mock interview platform using LangChain, Google Gemini, Streamlit, and MLflow &mdash; Dec 2025</span>
+    </div>
+    <span class="pd-blog-arrow">&#8599;</span>
+  </a>
+</div>
+
+<div class="pd-content">
+  <div class="pd-body">
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">01</span><div class="pd-section-line"></div></div>
+      <h2>Overview</h2>
+      <p style="font-size: 1.2rem;">Most interview prep tools ask generic questions.</br> MockMentor is different, it <strong>reads your actual resume</strong> and the job profile you are targeting, then generates questions that are directly relevant to your background and the role. </br><strong>It knows your work experience, your projects, your skills, EVERYTHING! </br>It asks accordingly.</strong></p>
+      <p style="font-size: 1.2rem;"><strong>Built with LangChain orchestration, Google Gemini as the LLM backbone, and Streamlit for a clean deployable UI. MLflow handles experiment tracking so you can see how your answers improve over sessions.</strong></p>
+    </div>
+
+    <div class="pd-section reveal d1">
+      <div class="pd-section-label"><span class="pd-section-num">02</span><div class="pd-section-line"></div></div>
+      <h2>The Problem</h2>
+      <p style="font-size: 1.2rem;"><strong>Generic interview prep is broken.</strong></br> Platforms give you the same questions regardless of who you are or what role you are targeting. <strong>A data scientist with an ML background and an analyst switching careers should not get the same questions &mdash; but they do.</strong></p>
+      <p style="font-size: 1.2rem;">MockMentor solves this with a simple insight: <strong>the best interview prep is contextual. Feed it your resume and the JD, and every question, hint, and piece of feedback is personalised to the intersection of your experience and the role&rsquo;s requirements.</strong></p>
+    </div>
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">03</span><div class="pd-section-line"></div></div>
+      <h2>Key Features</h2>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <span class="feat-icon">&#128196;</span>
+          <p class="feat-title" style="color: #fff;">Resume-Aware Questions</p>
+          <p class="feat-desc">Parses your PDF resume and generates questions grounded in your actual experience and projects.</p>
+        </div>
+        <!-- <div class="feat-card">
+          <span class="feat-icon">&#127919;</span>
+          <p class="feat-title">JD-Targeted Prep</p>
+          <p class="feat-desc">Paste any job description and MockMentor aligns questions to the role&rsquo;s specific requirements.</p>
+        </div> -->
+        <div class="feat-card">
+          <span class="feat-icon">&#9889;</span>
+          <p class="feat-title" style="color: #fff;">Real-Time Evaluation</p>
+          <p class="feat-desc">Gemini evaluates your answer immediately &mdash; scoring clarity, depth, and relevance on the fly.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#128203;</span>
+          <p class="feat-title" style="color: #fff;">Structured Feedback</p>
+          <p class="feat-desc">Every answer gets actionable feedback: what you got right, what was missing, how to improve.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#128202;</span>
+          <p class="feat-title" style="color: #fff;">MLflow Tracking</p>
+          <p class="feat-desc">Session scores and answer quality are tracked via MLflow so you can measure improvement over time.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#128279;</span>
+          <p class="feat-title" style="color: #fff;">LangChain Pipelines</p>
+          <p class="feat-desc">Modular chains handle parsing, question generation, evaluation, and feedback as clean composable steps.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal d1">
+      <div class="pd-section-label"><span class="pd-section-num">04</span><div class="pd-section-line"></div></div>
+      <h2>Technical Architecture</h2>
+      <p style="font-size:1.2rem">Three-stage LangChain pipeline: <span style="color: white;">ingestion &rarr; generation &rarr; evaluation. </span></br>Each stage is a composable chain, making it easy to swap models or add new question types without touching the rest of the system.</p>
+      <div class="arch-row">
+        <div class="arch-item"><span class="arch-label">LLM</span><div class="arch-tags"><span class="arch-tag arch-tag-p">Google Gemini</span><span class="arch-tag arch-tag-p">LangChain</span></div></div>
+        <div class="arch-item"><span class="arch-label">Ingestion</span><div class="arch-tags"><span class="arch-tag">PDF Resume Parsing</span></div></div>
+        <div class="arch-item"><span class="arch-label">Tracking</span><div class="arch-tags"><span class="arch-tag arch-tag-t">MLflow</span><span class="arch-tag arch-tag-t">Session Scoring</span></div></div>
+        <div class="arch-item"><span class="arch-label">Frontend</span><div class="arch-tags"><span class="arch-tag">Streamlit</span><span class="arch-tag">Python</span></div></div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">05</span><div class="pd-section-line"></div></div>
+      <h2>Challenges &amp; Learnings</h2>
+      <div class="learn-list">
+        <!-- <div class="learn-item">Getting Gemini to generate <strong style="-webkit-text-fill-color:var(--ink);color:var(--ink)">truly contextual questions</strong> rather than generic ones required significant prompt engineering. The key was injecting both the resume summary and the JD into a structured system prompt &mdash; framing the model as a senior interviewer who has already read the candidate&rsquo;s profile.</div> -->
+        <div class="learn-item">PDF resume parsing is messier than it looks. Different resume formats, fonts, and layouts produce wildly different text extraction results. Building a normalisation layer that cleans and structures the extracted text before feeding it to the LLM was essential for consistent question quality.</div>
+        <!-- <div class="learn-item">MLflow integration taught me a lot about <strong style="-webkit-text-fill-color:var(--ink);color:var(--ink)">experiment design for LLM applications</strong>. Unlike traditional ML, there is no single loss metric &mdash; tracking answer scores, question types, and user session patterns together gave a much richer picture of how the tool was actually being used.</div> -->
+        <div class="learn-item">LangChain&rsquo;s composable chain architecture made the evaluation pipeline surprisingly clean. Each stage: parse, generate, evaluate, feedback is independently testable and swappable, which proved valuable when switching models mid-build without breaking anything.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pd-sidebar">
+    <div class="pd-sidebar-card reveal">
+      <p class="pd-sidebar-title">Tech Stack</p>
+      <div class="pd-tech-tags">
+        <span class="pd-tech-tag">Python</span>
+        <span class="pd-tech-tag">LangChain</span>
+        <span class="pd-tech-tag">Google Gemini</span>
+        <span class="pd-tech-tag">Streamlit</span>
+        <span class="pd-tech-tag">MLflow</span>
+        <span class="pd-tech-tag">PDF Parsing</span>
+      </div>
+    </div>
+    <div class="pd-sidebar-card reveal d1">
+      <p class="pd-sidebar-title">Project Info</p>
+      <div style="display:flex;flex-direction:column;gap:.7rem">
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Status</span><span style="color:var(--a3);font-weight:700">Live &#10003;</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">LLM</span><span style="color:var(--ink);font-weight:600">Gemini</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Framework</span><span style="color:var(--ink);font-weight:600">LangChain</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Deploy</span><span style="color:var(--ink);font-weight:600">Streamlit Cloud</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Blog</span><span style="color:var(--ink);font-weight:600">7 min read</span></div>
+      </div>
+    </div>
+    <!-- <div class="pd-sidebar-card reveal d2">
+      <p class="pd-sidebar-title">Links</p>
+      <div class="pd-link-row">
+        <a href="https://mockmentor-vatsal.streamlit.app/" target="_blank" class="pd-link-item"><span>&#8599;</span> Live Demo</a>
+        <a href="https://medium.com/data-science-collective/building-mockmentor-ai-interview-coach-that-reads-your-resume-1f892a0a71f0?source=friends_link&sk=978fe50bcc8a8402632386f45d5b6a1e" target="_blank" class="pd-link-item"><span>&#8599;</span> Read Blog Post</a>
+        <a href="https://github.com/watzal" target="_blank" class="pd-link-item"><span>&#8599;</span> GitHub</a>
+      </div>
+    </div> -->
+    <!-- <div class="pd-sidebar-card reveal d3" style="background:rgba(123,110,246,.04);border-color:rgba(123,110,246,.2)">
+      <p class="pd-sidebar-title">Other Projects</p>
+      <div class="pd-link-row">
+        <a href="project-nicoli.html" class="pd-link-item"><span>&#8594;</span> Nicoli Extension</a>
+        <a href="project-rag.html" class="pd-link-item"><span>&#8594;</span> Medical RAG Chatbot</a>
+        <a href="project-nocode.html" class="pd-link-item"><span>&#8594;</span> No-Code ML Platform</a>
+      </div>
+    </div> -->
+  </div>
+</div>
+
+<div class="pd-footer"> 
+  <!-- <a href="backup.html" class="pd-footer-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Portfolio
+  </a> -->
+  <!-- <span style="font-size:.72rem;color:var(--ink3)">&copy; 2025 Vatsal Lakhmani</span> -->
+</div> 
+
+<script>
+const c=document.getElementById('cur'),r=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c.style.left=mx+'px';c.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;r.style.left=rx+'px';r.style.top=ry+'px';requestAnimationFrame(a)})();
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*70);revObs.unobserve(e.target)}});
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+</script>
+</body>
+</html>

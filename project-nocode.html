@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>MLMadeEasy — Vatsal Lakhmani</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,600;0,700;1,600;1,700&family=Syne:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#07080F;--bg2:#0D0E1A;--bg3:#121420;--bg4:#181A28;--ink:#EEE9FF;--ink2:#9490B0;--ink3:#504D6A;--a1:#7B6EF6;--a2:#F06BBA;--a3:#5EE8C8;--grad:linear-gradient(135deg,#7B6EF6,#F06BBA);--border:rgba(238,233,255,.07);--border2:rgba(238,233,255,.14)}
+html{scroll-behavior:smooth}
+body{font-family:'Syne',sans-serif;background:var(--bg);color:var(--ink);line-height:1.7;cursor:none;overflow-x:hidden}
+body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");pointer-events:none;z-index:1000;opacity:.35}
+#cur{width:10px;height:10px;background:var(--a1);border-radius:50%;position:fixed;top:0;left:0;z-index:9999;pointer-events:none;transform:translate(-50%,-50%);mix-blend-mode:screen}
+#cur-ring{width:34px;height:34px;border:1.5px solid rgba(123,110,246,.5);border-radius:50%;position:fixed;top:0;left:0;z-index:9998;pointer-events:none;transform:translate(-50%,-50%);transition:all .15s}
+.pd-nav{display:flex;align-items:center;justify-content:space-between;padding:1.4rem 4rem;border-bottom:1px solid var(--border);background:rgba(7,8,15,.85);backdrop-filter:blur(24px);position:sticky;top:0;z-index:500}
+.pd-back{display:inline-flex;align-items:center;gap:.6rem;font-size:.72rem;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s}
+.pd-back:hover{color:var(--a1)}
+.pd-back svg{transition:transform .2s}
+.pd-back:hover svg{transform:translateX(-3px)}
+.pd-links{display:flex;gap:.75rem}
+.pd-link{display:inline-flex;align-items:center;gap:.4rem;font-size:.72rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:.42rem 1.1rem;border-radius:100px;text-decoration:none;transition:all .2s;cursor:none}
+.pd-link-gh{color:var(--ink2);border:1px solid var(--border2)}
+.pd-link-gh:hover{color:var(--a1);border-color:rgba(123,110,246,.5);background:rgba(123,110,246,.06)}
+.pd-link-wip{color:var(--a3);border:1px solid rgba(94,232,200,.25);background:rgba(94,232,200,.06);display:inline-flex;align-items:center;gap:.4rem}
+.pd-link-wip-dot{width:5px;height:5px;border-radius:50%;background:var(--a3);animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(94,232,200,.5)}50%{box-shadow:0 0 0 6px rgba(94,232,200,0)}}
+.pd-hero{position:relative;padding:7rem 4rem 5rem;border-bottom:1px solid var(--border);background:radial-gradient(ellipse 80% 60% at 50% 0%,rgba(123,110,246,.1),transparent 65%),radial-gradient(ellipse 40% 40% at 10% 80%,rgba(94,232,200,.07),transparent 55%),var(--bg2);overflow:hidden;max-width:100%}
+.pd-hero-inner{max-width:1300px;margin:0 auto}
+.pd-hero-orb{position:absolute;top:-20%;right:-5%;width:500px;height:500px;border-radius:50%;background:radial-gradient(circle,rgba(123,110,246,.14),transparent 70%);filter:blur(80px);pointer-events:none;animation:orbDrift 12s ease-in-out infinite}
+.pd-hero-orb2{position:absolute;bottom:-10%;left:-5%;width:400px;height:400px;border-radius:50%;background:radial-gradient(circle,rgba(94,232,200,.08),transparent 70%);filter:blur(80px);pointer-events:none;animation:orbDrift 18s ease-in-out infinite reverse}
+@keyframes orbDrift{0%,100%{transform:translate(0,0)}50%{transform:translate(-30px,20px)}}
+.pd-eyebrow{display:flex;align-items:center;gap:.75rem;margin-bottom:1.8rem;flex-wrap:wrap;opacity:0;animation:fadeUp .6s .1s cubic-bezier(.16,1,.3,1) forwards}
+.pd-cat{font-size:.68rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:rgba(123,110,246,.1);color:var(--a1);border:1px solid rgba(123,110,246,.2);padding:.3rem .9rem;border-radius:100px}
+.pd-badge{font-size:.68rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.3rem .9rem;border-radius:100px;display:inline-flex;align-items:center;gap:.4rem}
+.pd-badge-wip{background:rgba(94,232,200,.08);color:var(--a3);border:1px solid rgba(94,232,200,.2)}
+.pd-badge-phase{background:rgba(240,107,186,.08);color:var(--a2);border:1px solid rgba(240,107,186,.2)}
+.pd-badge-dot{width:5px;height:5px;border-radius:50%;background:currentColor;animation:pulse 2s infinite}
+/* .pd-title{font-family:'Cormorant Garamond',serif;font-size:clamp(4rem,9vw,8.5rem);font-weight:700;letter-spacing:-.05em;color:var(--ink);line-height:.9;margin-bottom:.6rem;text-align:center;opacity:0;animation:fadeUp .8s .25s cubic-bezier(.16,1,.3,1) forwards} */
+/* .pd-title-sub{font-family:'Cormorant Garamond',serif;font-size:clamp(1.4rem,2.8vw,2.4rem);font-style:italic;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2rem;display:block;text-align:center;opacity:0;animation:fadeUp .7s .42s cubic-bezier(.16,1,.3,1) forwards}
+.pd-subtitle{font-size:1.05rem;color:var(--ink2);max-width:640px;line-height:2;margin-bottom:3rem;text-align:center;margin-left:auto;margin-right:auto;opacity:0;animation:fadeUp .7s .55s cubic-bezier(.16,1,.3,1) forwards} */
+.pd-title{font-family:'Cormorant Garamond',serif;font-size:clamp(4.5rem,9vw,9rem);font-weight:700;letter-spacing:-.05em;color:var(--ink);line-height:.9;margin-bottom:.6rem;text-align:center;opacity:0;animation:fadeUp .8s .25s cubic-bezier(.16,1,.3,1) forwards}
+.pd-title-sub{
+  font-family:'Cormorant Garamond',serif;
+  font-size:clamp(3.4rem,2.8vw,2.4rem);
+  font-style:italic;
+  background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  margin-bottom:2rem;display:block;
+  text-align:center;
+  opacity:0;animation:fadeUp .7s .42s cubic-bezier(.16,1,.3,1) forwards;
+}
+.pd-subtitle{
+  font-size:1.75rem;color:var(--ink2);max-width:180020px;line-height:2;margin-bottom:3rem;
+  justify-content: center;
+  text-align: center;
+  opacity:0;animation:fadeUp .7s .55s cubic-bezier(.16,1,.3,1) forwards;
+}
+.pd-meta-row{display:flex;gap:0;flex-wrap:wrap;padding-top:2rem;border-top:1px solid var(--border);justify-content:center;opacity:0;animation:fadeUp .6s .7s cubic-bezier(.16,1,.3,1) forwards}
+.pd-meta-item{padding:0 2.5rem;border-right:1px solid var(--border)}
+.pd-meta-item:first-child{padding-left:0}
+.pd-meta-item:last-child{border-right:none}
+.pd-meta-label{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-bottom:.4rem}
+.pd-meta-val{font-size:.95rem;font-weight:700;color:var(--ink)}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
+.pd-stats{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--border);background:var(--bg3);max-width:100%}
+.pd-stat{padding:2.5rem 2rem;border-right:1px solid var(--border);text-align:center;transition:background .3s}
+.pd-stat:last-child{border-right:none}
+.pd-stat:hover{background:rgba(123,110,246,.05)}
+.pd-stat-val{font-family:'Cormorant Garamond',serif;font-size:2.8rem;font-weight:700;letter-spacing:-.04em;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;display:block;line-height:1}
+.pd-stat-label{font-size:.65rem;font-weight:600;letter-spacing:.14em;text-transform:uppercase;color:var(--ink3);margin-top:.5rem;display:block}
+
+/* SCREENSHOT GRID */
+.pd-screenshots{padding:3rem 4rem;border-bottom:1px solid var(--border);background:var(--bg2)}
+.pd-screenshots-inner{max-width:1300px;margin:0 auto}
+.pd-screenshots-label{font-size:.65rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--ink3);margin-bottom:1.5rem;display:flex;align-items:center;gap:.75rem}
+.pd-screenshots-label::after{content:'';flex:1;height:1px;background:var(--border2)}
+.pd-screenshots-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem;position:relative}
+/* .pd-screenshot-slot{background:var(--bg3);border:1px solid var(--border2);border-radius:14px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative;transition:border-color .3s} */
+.pd-screenshot-slot{
+  background:var(--bg3);
+  border:1px solid var(--border2);
+  border-radius:14px;
+  overflow:hidden;
+  position:relative;
+  transition:border-color .3s,transform .4s cubic-bezier(.16,1,.3,1),box-shadow .4s;
+  cursor:pointer;
+}
+.pd-screenshot-slot:hover{
+  border-color:rgba(123,110,246,.4);
+  transform:translateY(-6px) scale(1.02);
+  box-shadow:0 24px 60px rgba(0,0,0,.6), 0 0 0 1px rgba(123,110,246,.15), 0 0 40px rgba(123,110,246,.08);
+  z-index:10;
+}
+.pd-screenshot-slot:hover img{
+  transform:scale(1.03);
+}
+/* .pd-screenshot-slot:hover{border-color:rgba(123,110,246,.3)} */
+/* .pd-screenshot-slot img{width:100%;height:100%;object-fit:cover;border-radius:14px} */
+.pd-screenshot-slot img{
+  width:100%;
+  height:100%;
+  object-fit:contain;
+  border-radius:14px;
+  display:block;
+  transition:transform .4s cubic-bezier(.16,1,.3,1);
+}
+.pd-screenshot-placeholder{display:flex;flex-direction:column;align-items:center;gap:.6rem;color:var(--ink3)}
+.pd-screenshot-placeholder span{font-size:1.8rem;opacity:.3}
+.pd-screenshot-placeholder p{font-size:.65rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;opacity:.3}
+
+.pd-content{display:grid;grid-template-columns:1fr 320px;gap:5rem;padding:5rem 4rem;align-items:start;max-width:1300px;margin:0 auto}
+.pd-section{margin-bottom:4rem}
+.pd-section-label{display:flex;align-items:center;gap:.8rem;margin-bottom:1.8rem}
+.pd-section-num{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.pd-section-line{flex:1;height:1px;background:linear-gradient(to right,var(--border2),transparent);max-width:40px}
+.pd-section h2{font-family:'Cormorant Garamond',serif;font-size:2.5rem;font-weight:700;letter-spacing:-.03em;color:var(--ink);line-height:1.1}
+.pd-section p{font-size:1.05rem;color:var(--ink2);line-height:2;margin-top:1rem}
+.pd-section strong{color:var(--ink);font-weight:600;-webkit-text-fill-color:var(--ink)}
+
+/* problem stats */
+.prob-stats{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:1.8rem}
+.prob-stat{padding:1.4rem 1.6rem;background:rgba(240,107,186,.05);border:1px solid rgba(240,107,186,.15);border-radius:12px;transition:border-color .3s,transform .3s}
+.prob-stat:hover{border-color:rgba(240,107,186,.3);transform:translateY(-2px)}
+.prob-stat-num{font-family:'Cormorant Garamond',serif;font-size:2rem;font-weight:700;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;line-height:1;display:block;margin-bottom:.3rem}
+.prob-stat-text{font-size:.78rem;color:var(--ink3);line-height:1.5}
+
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem;margin-top:1.8rem}
+.feat-card{padding:1.6rem 1.8rem;background:var(--bg2);border:1px solid var(--border);border-radius:14px;transition:border-color .35s,background .35s,transform .35s cubic-bezier(.16,1,.3,1);position:relative;overflow:hidden}
+.feat-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:var(--grad);transform:scaleX(0);transform-origin:left;transition:transform .4s cubic-bezier(.16,1,.3,1)}
+.feat-card:hover{border-color:rgba(123,110,246,.35);background:var(--bg3);transform:translateY(-3px)}
+.feat-card:hover::before{transform:scaleX(1)}
+.feat-icon{font-size:1.6rem;margin-bottom:.8rem;display:block}
+.feat-title{font-size:.88rem;font-weight:700;color:var(--ink);margin-bottom:.4rem;letter-spacing:.01em}
+.feat-desc{font-size:.82rem;color:var(--ink3);line-height:1.7}
+
+/* pipeline viz */
+.pipeline-flow{display:flex;align-items:center;gap:0;margin-top:1.8rem;overflow-x:auto;padding-bottom:.5rem}
+.pipe-step{display:flex;flex-direction:column;align-items:center;gap:.5rem;flex-shrink:0}
+.pipe-node{padding:.7rem 1.2rem;border-radius:10px;font-size:.72rem;font-weight:700;letter-spacing:.05em;white-space:nowrap;text-align:center}
+.pipe-node-csv{background:rgba(94,232,200,.1);border:1px solid rgba(94,232,200,.3);color:var(--a3)}
+.pipe-node-pre{background:rgba(91,143,185,.12);border:1px solid rgba(91,143,185,.3);color:#5b8fb9}
+.pipe-node-split{background:rgba(123,110,246,.1);border:1px solid rgba(123,110,246,.3);color:var(--a1)}
+.pipe-node-model{background:rgba(139,92,246,.12);border:1px solid rgba(139,92,246,.3);color:#8b5cf6}
+.pipe-node-out{background:rgba(240,107,186,.1);border:1px solid rgba(240,107,186,.25);color:var(--a2)}
+.pipe-arrow{font-size:.9rem;color:var(--ink3);padding:0 .4rem;flex-shrink:0;margin-top:-1.4rem}
+.pipe-label{font-size:.6rem;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3)}
+
+.arch-row{display:flex;flex-direction:column;gap:.85rem;margin-top:1.8rem}
+.arch-item{display:flex;align-items:center;gap:1.2rem;padding:1rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;transition:border-color .3s,transform .3s}
+.arch-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(4px)}
+.arch-label{font-size:.7rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);width:90px;flex-shrink:0}
+.arch-tags{display:flex;flex-wrap:wrap;gap:.4rem}
+.arch-tag{font-size:.72rem;padding:.22rem .7rem;background:rgba(123,110,246,.08);color:var(--a1);border:1px solid rgba(123,110,246,.15);border-radius:100px;font-weight:600}
+.arch-tag-p{background:rgba(240,107,186,.08);color:var(--a2);border-color:rgba(240,107,186,.15)}
+.arch-tag-t{background:rgba(94,232,200,.08);color:var(--a3);border-color:rgba(94,232,200,.15)}
+
+/* roadmap */
+.roadmap{display:flex;flex-direction:column;gap:.75rem;margin-top:1.8rem}
+.roadmap-item{display:flex;align-items:flex-start;gap:1rem;padding:1rem 1.4rem;border-radius:12px;border:1px solid var(--border);transition:border-color .3s,transform .3s}
+.roadmap-item:hover{transform:translateX(4px)}
+.roadmap-done{background:rgba(94,232,200,.05);border-color:rgba(94,232,200,.2)}
+.roadmap-done:hover{border-color:rgba(94,232,200,.4)}
+.roadmap-wip{background:rgba(123,110,246,.05);border-color:rgba(123,110,246,.2)}
+.roadmap-wip:hover{border-color:rgba(123,110,246,.35)}
+.roadmap-plan{background:rgba(240,107,186,.04);border-color:rgba(240,107,186,.15)}
+.roadmap-plan:hover{border-color:rgba(240,107,186,.3)}
+.roadmap-badge{font-size:.6rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:.2rem .6rem;border-radius:100px;flex-shrink:0;margin-top:.15rem}
+.rb-done{background:rgba(94,232,200,.1);color:var(--a3);border:1px solid rgba(94,232,200,.25)}
+.rb-wip{background:rgba(123,110,246,.1);color:var(--a1);border:1px solid rgba(123,110,246,.2)}
+.rb-plan{background:rgba(240,107,186,.08);color:var(--a2);border:1px solid rgba(240,107,186,.2)}
+.roadmap-text{font-size:.88rem;color:var(--ink2);line-height:1.6}
+.roadmap-text strong{color:var(--ink);-webkit-text-fill-color:var(--ink);font-weight:700}
+
+.learn-list{display:flex;flex-direction:column;gap:.85rem;margin-top:1.5rem}
+.learn-item{display:flex;align-items:flex-start;gap:1rem;padding:1.1rem 1.4rem;background:var(--bg2);border:1px solid var(--border);border-radius:12px;font-size:1.05rem;color:var(--ink2);line-height:1.8;transition:border-color .3s,transform .3s cubic-bezier(.16,1,.3,1)}
+.learn-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(5px)}
+.learn-item::before{content:'&#8594;';background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;margin-top:.1rem;font-size:1rem}
+
+.pd-sidebar{position:sticky;top:6rem}
+.pd-sidebar-card{background:var(--bg2);border:1px solid var(--border);border-radius:14px;padding:1.8rem;margin-bottom:1.2rem;transition:border-color .3s,box-shadow .3s}
+.pd-sidebar-card:hover{border-color:rgba(123,110,246,.25);box-shadow:0 8px 30px rgba(123,110,246,.06)}
+.pd-sidebar-title{font-size:.65rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:1.2rem}
+.pd-tech-tags{display:flex;flex-wrap:wrap;gap:.45rem}
+.pd-tech-tag{font-size:.78rem;padding:.24rem .7rem;background:rgba(123,110,246,.08);color:var(--a1);border:1px solid rgba(123,110,246,.15);border-radius:100px;font-weight:600}
+.pd-link-row{display:flex;flex-direction:column;gap:.5rem}
+.pd-link-item{display:flex;align-items:center;gap:.5rem;font-size:.85rem;color:var(--ink2);text-decoration:none;padding:.55rem .7rem;border-radius:8px;transition:all .2s;cursor:none}
+.pd-link-item:hover{color:var(--a1);background:rgba(123,110,246,.07);padding-left:1rem}
+.pd-link-item span{background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700}
+.pd-footer{padding:2rem 4rem;border-top:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:space-between}
+.pd-footer-back{display:inline-flex;align-items:center;gap:.5rem;font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);text-decoration:none;transition:color .2s;cursor:none}
+.pd-footer-back:hover{color:var(--a1)}
+.reveal{opacity:0;transform:translateY(28px);transition:opacity .8s cubic-bezier(.16,1,.3,1),transform .8s cubic-bezier(.16,1,.3,1)}
+.reveal.in{opacity:1;transform:none}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+.learn-item{
+  display:flex;align-items:flex-start;gap:1rem;
+  padding:1.1rem 1.4rem;
+  background:var(--bg2);border:1px solid var(--border);border-radius:12px;
+  font-size:1.2rem;color:var(--ink2);line-height:1.8;
+  transition:border-color .3s,transform .3s cubic-bezier(.16,1,.3,1);
+}
+.learn-item:hover{border-color:rgba(123,110,246,.25);transform:translateX(5px)}
+.learn-item::before{content:'→';background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;margin-top:.1rem;font-size:1rem}
+
+/* .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s} */
+</style>
+</head>
+<body>
+<div id="cur"></div>
+<div id="cur-ring"></div>
+
+<nav class="pd-nav">
+  <a href="backup.html" class="pd-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Portfolio
+  </a>
+  <div class="pd-links">
+    <!-- <a href="https://github.com/watzal" class="pd-link pd-link-gh" target="_blank">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a> -->
+    <span class="pd-link pd-link-wip"><span class="pd-link-wip-dot"></span>In Progress</span>
+  </div>
+</nav>
+
+<div class="pd-hero">
+  <div class="pd-hero-orb"></div>
+  <div class="pd-hero-orb2"></div>
+  <div class="pd-hero-inner">
+    <div class="pd-eyebrow">
+      <span class="pd-cat">No-Code &middot; Machine Learning</span>
+      <span class="pd-badge pd-badge-wip"><span class="pd-badge-dot"></span>Phase 2 Active</span>
+      <span class="pd-badge pd-badge-phase">12 ML Models</span>
+    </div>
+    <h1 class="pd-title">MLMadeEasy</h1>
+    <span class="pd-title-sub">Build ML Pipelines Without Writing a Single Line of Code</span>
+    <p class="pd-subtitle">A <strong style="-webkit-text-fill-color:var(--ink);color:var(--ink)">visual, node-based ML pipeline builder</strong> &mdash; drag, connect, train. Upload your CSV, get instant data quality insights, build preprocessing pipelines, and train models. </br><strong style="color:var(--ink)"> From data to model in under 6 minutes. </strong></p>
+    <div class="pd-meta-row">
+      <div class="pd-meta-item"><p class="pd-meta-label">Status</p><p class="pd-meta-val" style="color:var(--a2)">&#9679; In Progress</p></div>
+      <div class="pd-meta-item"><p class="pd-meta-label">Stack</p><p class="pd-meta-val">React &middot; Flask</p></div>
+      <div class="pd-meta-item"><p class="pd-meta-label">Type</p><p class="pd-meta-val">Personal Project</p></div>
+      <div class="pd-meta-item"><p class="pd-meta-label">Phase</p><p class="pd-meta-val">2 of 4</p></div>
+    </div>
+  </div>
+</div>
+
+<div class="pd-stats reveal">
+  <div class="pd-stat"><span class="pd-stat-val">50x</span><span class="pd-stat-label">Faster than Coding</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">12</span><span class="pd-stat-label">ML Models Supported</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">9</span><span class="pd-stat-label">Preprocessing Nodes</span></div>
+  <div class="pd-stat"><span class="pd-stat-val">6min</span><span class="pd-stat-label">Avg Time to Model</span></div>
+</div>
+
+<!-- SCREENSHOTS -->
+<div class="pd-screenshots reveal">
+  <div class="pd-screenshots-inner">
+    <p class="pd-screenshots-label">App Screenshots</p>
+    <div class="pd-screenshots-grid">
+      <div class="pd-screenshot-slot">
+        <img src="screenshot-1.png" alt="MLMadeEasy Pipeline Builder" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="pd-screenshot-placeholder" style="display:none"><span>&#9881;&#65039;</span><p>Add screenshot-1.png</p></div>
+      </div>
+      <div class="pd-screenshot-slot">
+        <img src="screenshot-2.png" alt="MLMadeEasy Data Insights" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="pd-screenshot-placeholder" style="display:none"><span>&#128202;</span><p>Add screenshot-2.png</p></div>
+      </div>
+      <div class="pd-screenshot-slot">
+        <img src="screenshot-3.png" alt="MLMadeEasy Model Config" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="pd-screenshot-placeholder" style="display:none"><span>&#129504;</span><p>Add screenshot-3.png</p></div>
+      </div>
+      <div class="pd-screenshot-slot">
+        <img src="screenshot-4.png" alt="MLMadeEasy Feature Selection" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="pd-screenshot-placeholder" style="display:none"><span>&#128269;</span><p>Add screenshot-4.png</p></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="pd-content">
+  <div class="pd-body">
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">01</span><div class="pd-section-line"></div></div>
+      <h2>Overview</h2>
+      <p style="font-size: 1.2rem;"><strong>MLMadeEasy is a no-code machine learning platform where you build ML pipelines the same way you'd draw a flowchart &mdash; by connecting nodes.</strong> </br>Upload a CSV, and the platform instantly analyses your data quality, flags issues, and suggests fixes.<strong> Then drag preprocessing nodes, connect a model, hit train.</strong></p>
+      <p style="font-size: 1.2rem;">The goal is to <strong>eliminate the 60&ndash;80% of ML work that is boilerplate</strong> &mdash; the repetitive data cleaning, scaling, encoding, and splitting that consumes most of the time before any actual modelling begins.</p>
+    </div>
+
+    <div class="pd-section reveal d1">
+      <div class="pd-section-label"><span class="pd-section-num">02</span><div class="pd-section-line"></div></div>
+      <h2>The Problem</h2>
+      <p style="font-size: 1.2rem;"><strong>Only 13% of ML projects make it to production.</strong> </br>The bottleneck isn't algorithms, it's the grinding, error-prone data preparation work that precedes them.</p>
+      <div class="prob-stats">
+        <div class="prob-stat"><span class="prob-stat-num">80%</span><span class="prob-stat-text" style="color: #fff; ">of ML projects fail due to poor data quality (Gartner)</span></div>
+        <div class="prob-stat"><span class="prob-stat-num">60%</span><span class="prob-stat-text" style="color: #fff; ">of a data scientist's time is spent cleaning data, not building models</span></div>
+        <div class="prob-stat"><span class="prob-stat-num">13%</span><span class="prob-stat-text" style="color: #fff; ">of data science projects make it to production (VentureBeat)</span></div>
+        <div class="prob-stat"><span class="prob-stat-num">3&ndash;6mo</span><span class="prob-stat-text" style="color: #fff; ">average time to build an ML model in enterprise</span></div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">03</span><div class="pd-section-line"></div></div>
+      <h2>Key Features</h2>
+      <div class="feat-grid">
+        <div class="feat-card">
+          <span class="feat-icon">&#128202;</span>
+          <p class="feat-title" style="color: #fff; ">Automated Data Quality Score</p>
+          <p class="feat-desc">Instant 0&ndash;100 quality score based on completeness, uniqueness, and outlier analysis</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#128279;</span>
+          <p class="feat-title" style="color: #fff; ">Visual Node-Based Editor</p>
+          <p class="feat-desc">Drag nodes from the sidebar, connect them on a canvas. ReactFlow-powered with smart connection validation.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#9989;</span>
+          <p class="feat-title" style="color: #fff; ">Smart Recommendations</p>
+          <p class="feat-desc">AI-powered suggestions flagged by severity &mdash; missing values, high cardinality, skewed distributions, outliers.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#9881;&#65039;</span>
+          <p class="feat-title" style="color: #fff; ">9 Preprocessing Nodes</p>
+          <p class="feat-desc">Fill NA, drop duplicates, normalise, encode, remove outliers, feature selection, datetime extraction, and more.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#129504;</span>
+          <p class="feat-title" style="color: #fff; ">12 ML Models</p>
+          <p class="feat-desc">Linear, Random Forest, XGBoost, SVC, KNN, Naive Bayes &mdash; with manual and auto (Grid, Random, Bayesian) hyperparameter tuning.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#127891;</span>
+          <p class="feat-title" style="color: #fff; ">Smart Train-Test Split</p>
+          <p class="feat-desc">Configure target, features, and ignored columns visually. Auto-stratification for classification targets.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#128269;</span>
+          <p class="feat-title" style="color: #fff; ">Column-Level Statistics</p>
+          <p class="feat-desc">Mean, median, skewness, kurtosis, IQR-based outlier detection for numerical; cardinality for categorical.</p>
+        </div>
+        <div class="feat-card">
+          <span class="feat-icon">&#9889;</span>
+          <p class="feat-title" style="color: #fff; ">Real-Time Validation</p>
+          <p class="feat-desc">Connection rules enforced live &mdash; invalid edges rejected with clear error messages before you even click train.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal d1">
+      <div class="pd-section-label"><span class="pd-section-num">04</span><div class="pd-section-line"></div></div>
+      <h2>Pipeline Flow</h2>
+      <p style="font-size:1.2rem"><strong>Every pipeline follows the same logical flow &mdash; data in, transform, split, model, evaluate. </strong></br>Each stage is a node you configure independently.</p>
+      <div class="pipeline-flow">
+        <div class="pipe-step"><div class="pipe-node pipe-node-csv">CSV Upload</div><span class="pipe-label">Data In</span></div>
+        <span class="pipe-arrow">&#8594;</span>
+        <div class="pipe-step"><div class="pipe-node pipe-node-pre">Preprocessing</div><span class="pipe-label">9 Node Types</span></div>
+        <span class="pipe-arrow">&#8594;</span>
+        <div class="pipe-step"><div class="pipe-node pipe-node-split">Train / Test Split</div><span class="pipe-label">Feature Config</span></div>
+        <span class="pipe-arrow">&#8594;</span>
+        <div class="pipe-step"><div class="pipe-node pipe-node-model">ML Model</div><span class="pipe-label">12 Algorithms</span></div>
+        <span class="pipe-arrow">&#8594;</span>
+        <div class="pipe-step"><div class="pipe-node pipe-node-out">Evaluation</div><span class="pipe-label">Metrics &amp; Charts</span></div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">05</span><div class="pd-section-line"></div></div>
+      <h2>Technical Architecture</h2>
+      <p style="font-size:1.2rem">Clean separation: the React frontend handles the visual canvas and all UI state. </br>The Flask backend is a pure data API &mdash; it receives CSV files, runs Pandas analysis, and will run model training. No business logic bleeds across the boundary.</p>
+      <div class="arch-row">
+        <div class="arch-item"><span class="arch-label">Frontend</span><div class="arch-tags"><span class="arch-tag">React</span><span class="arch-tag">Vite</span><span class="arch-tag">Node UI</span><span class="arch-tag">Tailwind CSS</span></div></div>
+        <div class="arch-item"><span class="arch-label">Backend</span><div class="arch-tags"><span class="arch-tag arch-tag-p">Flask</span><span class="arch-tag arch-tag-p">Python</span><span class="arch-tag arch-tag-p">SciPy</span></div></div>
+        <div class="arch-item"><span class="arch-label">ML</span><div class="arch-tags"><span class="arch-tag arch-tag-t">MLFlow</span><span class="arch-tag arch-tag-t">Scikit-learn</span><span class="arch-tag arch-tag-t">Tensorflow</span></div></div>
+        <div class="arch-item"><span class="arch-label">API</span><div class="arch-tags"><span class="arch-tag">RESTful</span><span class="arch-tag">Flask-CORS</span></div></div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal d1">
+      <div class="pd-section-label"><span class="pd-section-num">06</span><div class="pd-section-line"></div></div>
+      <h2>Roadmap</h2>
+      <div class="roadmap">
+        <div class="roadmap-item roadmap-done"><span class="roadmap-badge rb-done">&#10003; Done</span><span class="roadmap-text"><strong>Phase 1</strong> &mdash; CSV upload, automated data analysis, quality scoring, 9 preprocessing nodes, 12 model UIs, visual canvas with connection validation</span></div>
+        <div class="roadmap-item roadmap-wip"><span class="roadmap-badge rb-wip">Active</span><span class="roadmap-text"><strong>Phase 2</strong> &mdash; Model training backend, hyperparameter tuning (Grid/Random/Bayesian), evaluation metrics (RMSE, MAE, R&sup2;, F1), output visualisation nodes</span></div>
+        <div class="roadmap-item roadmap-plan"><span class="roadmap-badge rb-plan">Planned</span><span class="roadmap-text"><strong>Phase 3</strong> &mdash; XLSX &amp; SQL data sources, PCA, model comparison, export trained models (pickle, ONNX), template pipelines</span></div>
+        <div class="roadmap-item roadmap-plan"><span class="roadmap-badge rb-plan">Future</span><span class="roadmap-text"><strong>Phase 4</strong> &mdash; Deep learning support, time series forecasting, NLP pipelines, AutoML, multi-user collaboration</span></div>
+      </div>
+    </div>
+
+    <div class="pd-section reveal">
+      <div class="pd-section-label"><span class="pd-section-num">07</span><div class="pd-section-line"></div></div>
+      <h2>Challenges &amp; Learnings</h2>
+      <div class="learn-list">
+        <div class="learn-item">Designing a graph-based connection validation system was the most technically interesting challenge. Each node type has different valid inputs and outputs &mdash; a Train node can only come from a split, a model needs a Train connection to be valid. Encoding these rules into a clean, extensible system without a mass of if-statements required careful architecture.</div>
+        <div class="learn-item">The data quality scoring algorithm went through several iterations. The first version was too lenient &mdash; datasets with severe issues were scoring 80+. Introducing weighted completeness and uniqueness scoring, combined with severity-tiered recommendations, made the output genuinely useful rather than just decorative.</div>
+        <!-- <div class="learn-item">ReactFlow is powerful but opinionated. Getting the right panel to update dynamically based on whichever node was selected &mdash; without re-rendering the entire canvas &mdash; required careful state management with <strong>useCallback and useRef</strong> to avoid performance issues on larger pipelines.</div> -->
+        <div class="learn-item">Building this taught me more about data preprocessing than any course. Implementing the IQR outlier detection, skewness checks, and cardinality analysis myself rather than calling a library gave me a deep intuition for what these statistics actually mean for model performance.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="pd-sidebar">
+    <div class="pd-sidebar-card reveal">
+      <p class="pd-sidebar-title">Tech Stack</p>
+      <div class="pd-tech-tags">
+        <span class="pd-tech-tag">React</span>
+        <!-- <span class="pd-tech-tag">ReactFlow</span> -->
+        <span class="pd-tech-tag">Vite</span>
+        <span class="pd-tech-tag">Tailwind CSS</span>
+        <span class="pd-tech-tag">Flask</span>
+        <span class="pd-tech-tag">Python</span>
+        <span class="pd-tech-tag">Scikit-learn</span>
+        <span class="pd-tech-tag">Tensorflow</span>
+        <span class="pd-tech-tag">SciPy</span>
+        <span class="pd-tech-tag">Node UI</span>
+        <span class="pd-tech-tag">MLflow</span>
+        
+      </div>
+    </div>
+    <div class="pd-sidebar-card reveal d1">
+      <p class="pd-sidebar-title">Project Info</p>
+      <div style="display:flex;flex-direction:column;gap:.7rem">
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Status</span><span style="color:var(--a2);font-weight:700">In Progress</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Phase</span><span style="color:var(--ink);font-weight:600">2 of 4</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Models</span><span style="color:var(--ink);font-weight:600">12 algorithms</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Preprocessing</span><span style="color:var(--ink);font-weight:600">9 node types</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:1rem"><span style="color:var(--ink3)">Speed</span><span style="color:var(--ink);font-weight:600">50x faster than code</span></div>
+      </div>
+    </div>
+    <!-- <div class="pd-sidebar-card reveal d2"> -->
+      <!-- <p class="pd-sidebar-title">Links</p> -->
+      <!-- <div class="pd-link-row">
+        <a href="https://github.com/watzal" target="_blank" class="pd-link-item"><span>&#8599;</span> View on GitHub</a>
+      </div> -->
+    <!-- </div> -->
+    <!-- <div class="pd-sidebar-card reveal d3" style="background:rgba(123,110,246,.04);border-color:rgba(123,110,246,.2)">
+      <p class="pd-sidebar-title">Other Projects</p>
+      <div class="pd-link-row">
+        <a href="project-nicoli.html" class="pd-link-item"><span>&#8594;</span> Nicoli Extension</a>
+        <a href="project-mockmentor.html" class="pd-link-item"><span>&#8594;</span> MockMentor</a>
+        <a href="project-rag.html" class="pd-link-item"><span>&#8594;</span> Medical RAG Chatbot</a>
+      </div> -->
+    </div> 
+  </div>
+</div>
+
+<div class="pd-footer">
+  <!-- <a href="index.html" class="pd-footer-back">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Portfolio
+  </a> -->
+  <!-- <span style="font-size:.72rem;color:var(--ink3)">&copy; 2025 Vatsal Lakhmani</span> -->
+</div>
+
+<script>
+const c=document.getElementById('cur'),r=document.getElementById('cur-ring');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;c.style.left=mx+'px';c.style.top=my+'px'});
+(function a(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;r.style.left=rx+'px';r.style.top=ry+'px';requestAnimationFrame(a)})();
+const revObs=new IntersectionObserver(entries=>{
+  entries.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),i*70);revObs.unobserve(e.target)}});
+},{threshold:.07});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+</script>
+</body>
+</html>
