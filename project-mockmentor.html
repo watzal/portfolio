@@ -133,6 +133,58 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .learn-item::before{content:'→';background:var(--grad);-webkit-background-clip:text;-webkit-text-fill-color:transparent;font-weight:700;flex-shrink:0;margin-top:.1rem;font-size:1rem}
 
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+
+/* RESPONSIVE */
+@media(max-width:1024px){
+  .pd-nav{padding:1.2rem 2rem}
+  .pd-hero{padding:5rem 2.5rem 3.5rem}
+  .pd-content{grid-template-columns:1fr;gap:3rem;padding:4rem 2.5rem}
+  .pd-sidebar{position:static}
+  .pd-stats{grid-template-columns:repeat(2,1fr)}
+  .pd-stat:nth-child(2){border-right:none}
+  .pd-stat:nth-child(3){border-top:1px solid var(--border)}
+  .feat-grid{grid-template-columns:1fr 1fr}
+  .pd-blog-strip{padding:2rem 2.5rem}
+}
+@media(max-width:768px){
+  #cur,#cur-ring{display:none}
+  body{cursor:auto}
+  .pd-nav{padding:1rem 1.2rem;flex-wrap:wrap;gap:.6rem}
+  .pd-links{gap:.5rem;flex-wrap:wrap}
+  .pd-link{font-size:.65rem;padding:.35rem .8rem}
+  .pd-hero{padding:4rem 1.5rem 3rem}
+  .pd-hero-inner{max-width:100%}
+  .pd-title{font-size:clamp(3rem,14vw,6rem);letter-spacing:-.04em}
+  .pd-title-sub{font-size:clamp(1.1rem,4vw,1.6rem)}
+  .pd-subtitle{font-size:.95rem;max-width:100%}
+  .pd-eyebrow{flex-wrap:wrap;gap:.5rem}
+  .pd-meta-item{padding:.8rem 1.2rem;border-right:none;border-bottom:1px solid var(--border);width:50%}
+  .pd-meta-item:nth-child(odd){border-right:1px solid var(--border)}
+  .pd-stats{grid-template-columns:repeat(2,1fr)}
+  .pd-stat:nth-child(2){border-right:none}
+  .pd-stat:nth-child(3){border-top:1px solid var(--border)}
+  .pd-blog-strip{padding:1.5rem 1.2rem}
+  .pd-blog-card{flex-direction:column;gap:1rem;padding:1.4rem}
+  .pd-blog-arrow{display:none}
+  .pd-content{grid-template-columns:1fr;gap:2.5rem;padding:3rem 1.5rem}
+  .pd-sidebar{position:static}
+  .feat-grid{grid-template-columns:1fr}
+  .arch-item{flex-direction:column;align-items:flex-start;gap:.6rem}
+  .arch-label{width:auto}
+  .pd-footer{padding:1.5rem;flex-direction:column;gap:.75rem;text-align:center}
+  .pd-section h2{font-size:2rem}
+}
+@media(max-width:480px){
+  .pd-hero{padding:3.5rem 1.2rem 2.5rem}
+  .pd-title{font-size:clamp(2.5rem,12vw,4.5rem)}
+  .pd-stats{grid-template-columns:1fr 1fr}
+  .pd-stat{padding:1.5rem 1rem}
+  .pd-stat-val{font-size:2rem}
+  .pd-content{padding:2.5rem 1.2rem}
+  .feat-card{padding:1.3rem}
+  .learn-item{font-size:.85rem;padding:.9rem 1rem}
+}
 </style>
 </head>
 <body>
